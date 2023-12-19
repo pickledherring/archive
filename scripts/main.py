@@ -1,0 +1,11 @@
+import scraper
+# bbh = scraper.BackBlazeHandler()
+# b2 = bbh.get_b2_resource()
+# # print(bbh.upload_file("downloads/Anti-Junta Forces arresting a police sergeant in Yinmarbin. _audio_128.mp4", "audio_arrest", b2))
+# print(bbh.list_object_keys(b2))
+# scraper.join_audio_video("downloads/Anti-Junta Forces arresting a police sergeant in Yinmarbin. _audio_128.mp4", "downloads/Anti-Junta Forces arresting a police sergeant in Yinmarbin. _video_360.mp4", "downloads/combined.mp4")
+driver = scraper.make_driver()
+post_info = scraper.get_posts(driver)
+errors = scraper.process_post_info(post_info, driver)
+driver.quit()
+print(errors)
