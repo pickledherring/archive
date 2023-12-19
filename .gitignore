@@ -1,0 +1,14 @@
+**/constants.py
+downloads
+*/__pycache__
+bin
+.pytest_cache
+include
+lib
+etc
+pyvenv.cfg
+shreddit-post collection.txt
+pytest.ini
+tests/output.txt
+share/
+scripts/*.txt
