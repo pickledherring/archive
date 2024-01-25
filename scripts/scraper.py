@@ -7,6 +7,7 @@ import time
 from datetime import datetime
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from datetime import datetime
 import ffmpeg
 import constants
@@ -24,7 +25,12 @@ from selenium.webdriver.support import expected_conditions as EC
 def make_driver():
     try:
         service = Service(ChromeDriverManager().install())
+        
         driver = webdriver.Chrome(service=service)
+
+        # options = Options()
+        # options.add_argument('--headless=new')
+        # driver = webdriver.Chrome(service=service, options=options)
         return driver
     except ConnectionError as e:
         print(e)
