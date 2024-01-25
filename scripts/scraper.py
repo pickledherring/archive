@@ -66,20 +66,23 @@ def get_details(result):
         score = int(score)
     
     post_type = shreddit_post['post-type']
+    post_link = "https://www.reddit.com" + shreddit_post['permalink']
     content_link = shreddit_post['content-href']
     gallery = []
     if post_type == 'gallery':
         # should also get alternate text
-        content_link = "https://www.reddit.com" + shreddit_post['permalink']
         # is this the highest quality image?
         soup = bs(str(result), 'html.parser')
         imgs = soup.find_all('img')
         for img in imgs:
             if img['alt']:
+                alt_text = img['alt'].strip('r/Myanmarcombatfootage - ')
                 try:
-                    gallery.append([img['src'], img['alt']])
+                    gallery.append([img['src'], alt_text])
                 except KeyError:
-                    gallery.append([img['data-lazy-src'], img['alt']])
+                    gallery.append([img['data-lazy-src'], alt_text])
+    else:
+        gallery = None
 
     details = {
         "author": shreddit_post['author'],
@@ -87,6 +90,7 @@ def get_details(result):
         "flair": flair_text,
         "title": shreddit_post['post-title'],
         "score": score,
+        "post_link": post_link,
         "content_link": content_link,
         "gallery": gallery,
         "post_type": post_type
@@ -124,11 +128,14 @@ def get_posts(driver):
         
     return post_info
 
+def post_text(tag):
+    return 'data-post-click-location' in tag.attrs and tag['data-post-click-location'] == 'text-body'
+
 def process_post_info(post_info, driver, output_path="process_post_output.txt"):
     errors = []
     for post in post_info:
-        driver.get(post['content_link'])
-        print(f"\ncontent link: {post['content_link']}\n")
+        # print(f"\ncontent link: {post['content_link']}\n")
+        driver.get(post['post_link'])
         # wait = WebDriverWait(driver, 5)
         im_over_18 = None
         try:
@@ -141,21 +148,23 @@ def process_post_info(post_info, driver, output_path="process_post_output.txt"):
             im_over_18 = shadow_root2.find_element(By.ID, "secondary-button")
             im_over_18.click()
             time.sleep(1)
-            html = driver.page_source
-            soup = bs(html, 'html.parser')
-            result = soup.find('shreddit-post')
-            if result:
-                text_body = result.find_all('p')[-1]
-                post['text'] = text_body.text.strip()
         except Exception as e:
+            # need to split out the exceptions here
             with open(output_path, "w") as f:
                 f.write(str(e))
                 html = driver.page_source
                 f.write(html)
 
+        html = driver.page_source
+        soup = bs(html, 'html.parser')
+        result = soup.find('shreddit-post')
+        if result:
+            text_body = result.find(post_text)
+            post['text'] = text_body.text.strip() if text_body else None
+            print(post['text'])
+
         title = post['title']
-        post_type = post['post_type'] 
-        match post_type:
+        match post['post_type']:
             case 'video':
                 link = post['content_link']
                 # process_err = download_video(title, link)
@@ -164,11 +173,8 @@ def process_post_info(post_info, driver, output_path="process_post_output.txt"):
                 gallery = post['gallery']
                 # process_err = download_gallery(title, gallery)
                 # errors.append(process_err)
-            case 'text':
-                # perhaps should be refined - character minimum, question (flair)
-                continue
 
-    return post, errors
+    return post_info, errors
 
 def download_video(title, link):
     # filter title of / here
