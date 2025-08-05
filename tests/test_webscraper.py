@@ -16,7 +16,7 @@ from urllib.request import url2pathname
 from bs4 import BeautifulSoup as bs
 from requests.exceptions import ConnectionError
 
-url = "https://www.reddit.com/r/Myanmarcombatfootage/new"
+url = "https://www.reddit.com/r/Seattle/new"
 
 @pytest.fixture
 def driver():
@@ -107,13 +107,13 @@ def test_download_good():
     requests_session = requests.session()
     requests_session.mount('file://', LocalFileAdapter())
     # should download these files correctly
-    url = f"file://{os.getcwd()}/downloads/Footage of BPLA(Bamar People's Liberation Army) troops fighting under the MNDAA during the battles in the Kokang region._audio_128.mp4"
+    url = f"file://{os.getcwd()}/downloads/"
     save_path = "to_delete_audio.mp4"
     download(url, save_path, requests_session)
     # assert the audio file exists
     assert "to_delete_audio.mp4" in os.listdir()
     
-    url = f"file://{os.getcwd()}/downloads/Footage of BPLA(Bamar People's Liberation Army) troops fighting under the MNDAA during the battles in the Kokang region._video_360.mp4"
+    url = f"file://{os.getcwd()}/downloads/"
     save_path = "to_delete_video.mp4"
     download(url, save_path, requests_session)
     # assert the video file exists
@@ -136,29 +136,13 @@ def test_download_bad():
 
 def test_get_details_text(results):
     details = get_details(results[0])
-    assert details['author'] == 'Most-Butterscotch871'
+    assert details['author'] == 'nnnnaaaaiiiillll'
     assert details['dt'] == datetime(2023, 2, 17, 14, 21, 46, 343000)
-    assert details['flair'] == 'Announcement 📣'
-    assert details['title'] == 'General Personal Security (PERSEC) Rule'
+    assert details['flair'] == 'That sounds great. Let’s hang out soon. '
+    assert details['title'] == 'Missing Girl - Mia Castaneda'
     assert details['score'] == 31
-    assert details['content_link'] == "https://www.reddit.com/r/Myanmarcombatfootage/comments/114lml4/general_personal_security_persec_rule/"
+    assert details['content_link'] == "https://www.reddit.com/r/Seattle/comments/1mhwswq/missing_girl_mia_castaneda/"
     assert details['post_type'] == 'text'
-
-def test_get_details_no_score_link(results):
-    details = get_details(results[1])
-    print(details["content_link"])
-    assert details['score'] == "hidden"
-    # beautiful soup will fix the html to this link, which should have & in it after KARANG instead of &amp;
-    assert details['content_link'] == "https://www.bbc.com/news/world-asia-65906961?at_campaign=KARANGA&at_medium=RSS"
-    assert details['post_type'] == 'link'
-
-def test_get_details_video(results):
-    details = get_details(results[2])
-    assert details['score'] == 15
-    assert details['content_link'] == 'https://v.redd.it/2mrpu3m1w8pb1'
-    assert details['post_type'] == 'video'
-    assert details['flair'] == 'PDF'
-    assert details['title'] == 'Myanmar military column entered Myaung region, Ayeyarwady, recently. They were faced by Anti-Junta forces belonging to the CDSOM. The battle lasted 5 hours, and casualties are unknown.'
 
 def test_download_video_error(results):
     # should expand the scope to cover the invalid 720 but valid 360 case

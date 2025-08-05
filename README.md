@@ -8,7 +8,7 @@ If you want to try running it, main.py will go through all the posts within the 
 I believe it will work the same on any sub.
 <br/>
 <br/>
-You will need to install the Python libraries at the top of scraper.ipynb and chromedriver: https://googlechromelabs.github.io/chrome-for-testing/#stable
+You will need to install the Python libraries at the top of scraper.ipynb, Chrome, and chromedriver: https://googlechromelabs.github.io/chrome-for-testing/#stable
 <br/>
 <br/>
 **Watch out!** If you run main.py with the correct libraries, a window will pop up and start browsing that sub. It can bypass NSWF filters, so please be certain you are okay with any content potentially popping up. If not, in scraper.py in `make_driver()` you can uncomment
