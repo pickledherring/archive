@@ -1,14 +1,17 @@
 This is an archival tool that will eventually back up to a server and connect to a web interface. It is very much still in development.
 <br/>
 <br/>
-If you want to try running it, main.py will go through all the posts within the last 24 hours on the sub it's pointed to. I have it pointing towards Myanmar Combat Footage, which is an NSFW sub.You can change that in scraper.py on this line:
+If you want to try running it, main.py will go through all the posts within the last 24 hours on the sub it's pointed to. I have it pointing towards r/Seattle. You can change that in scraper.py on this line:
 
-`driver.get("https://www.reddit.com/r/Myanmarcombatfootage/new")`
+`driver.get("https://www.reddit.com/r/Seattle/new")`
 
 I believe it will work the same on any sub.
 <br/>
 <br/>
-**Watch out!** If you run main.py with the correct libraries, a window will pop up and start browsing that sub. It will bypass NSWF filters, so please be certain you are okay with blood and gore potentially popping up. If not, in scraper.py in `make_driver()` you can uncomment
+You will need to install the Python libraries at the top of scraper.ipynb and chromedriver: https://googlechromelabs.github.io/chrome-for-testing/#stable
+<br/>
+<br/>
+**Watch out!** If you run main.py with the correct libraries, a window will pop up and start browsing that sub. It can bypass NSWF filters, so please be certain you are okay with any content potentially popping up. If not, in scraper.py in `make_driver()` you can uncomment
 
 `options = Options()`
 
